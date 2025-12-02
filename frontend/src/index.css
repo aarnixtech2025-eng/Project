@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: sans-serif; /* Or your preferred font */
+  top: 0 !important;       /* Fix space left by Google banner */
+}
+
+/* Hide horizontal scrollbar */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* small custom tweaks */
+:root {
+  --hero-dark: #0e0f11;
+  --accent-blue: #2046F3;
+}
+
+/* put translator and text on the same baseline */
+.translate-widget {
+  display: flex;
+  align-items: center;
+}
+
+/* make sure auth buttons sit above any weird overlays */
+.nav-auth {
+  position: relative;
+  z-index: 10;
+}
+
+/* style the select box a bit */
+#google_translate_element select {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  border: 1px solid #e5e7eb;
+  background-color: #ffffff;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
