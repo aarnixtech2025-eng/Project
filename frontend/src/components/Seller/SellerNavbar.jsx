@@ -1,6 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import Dashboard from "../Dashboard";
 
 export default function FinalNavbar() {
   const navigate = useNavigate();
@@ -86,7 +85,7 @@ export default function FinalNavbar() {
     >
       <div
         className={
-          "bg-white/90 backdrop-blur-sm " +
+          "bg-blue/300 backdrop-blur-sm " +
           "container mx-auto px-6 py-4 flex items-center justify-between"
         }
       >
@@ -102,20 +101,7 @@ export default function FinalNavbar() {
         </Link>
 
         {/* CENTER LINKS */}
-        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-700">
-          <a href="#categories" className="hover:text-gray-900" onClick={() => navigate("/all-categories")}>
-            Product Categories
-          </a>
-          <a href="#for-buyer" className="hover:text-gray-900">
-            For Buyer
-          </a>
-          <Link to="/seller" aria-label="Go to sellerpage">
-         
-           <span className="hover:text-gray-900">
-             For Seller
-          </span>
-          </Link>
-        </div>
+        
 
         {/* RIGHT SECTION */}
         <div className="flex items-center gap-6">

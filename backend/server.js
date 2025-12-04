@@ -17,6 +17,7 @@ const airCleaningRoutes = require("./routes/airCleaningRoutes");
 const christmasRoutes = require("./routes/christmasRoutes");
 const enquiryRoutes = require("./routes/enquiryRoutes");
 const requirementRoutes = require("./routes/requirementRoutes");
+const businessProfile = require("./models/businessProfileSchema");
 
 const app = express();
 app.use(cors());
@@ -42,7 +43,7 @@ app.use("/api/aircleaning", airCleaningRoutes);
 app.use("/api/christ", christmasRoutes);
 app.use("/api/enquiry", enquiryRoutes);
 app.use("/api/requirements", requirementRoutes);
-
+app.use("/api/business-profile",businessProfile);
 // error handler (should be last)
 app.use(errorHandler);
 

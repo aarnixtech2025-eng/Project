@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 
-function SignInOrCreateAccount() {
+function SignInOrCreateAccount({onLogin}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -45,6 +45,11 @@ function SignInOrCreateAccount() {
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
     }
+    if (email && password) {
+    onLogin({ email }); // call the function from parent
+  } else {
+    alert("Please enter email and password");
+  }
   };
 
   // FORGOT PASSWORD
