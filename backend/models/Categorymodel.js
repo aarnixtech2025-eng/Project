@@ -1,23 +1,24 @@
-const mongoose = require('mongoose');
+// models/Category.js
+const mongoose = require("mongoose");
 
-// Subcategory schema
-const subcategorySchema = new mongoose.Schema(
-  {
-    name:  { type: String, required: true },
-    image: { type: String, required: true },
-  },
-  { timestamps: true }
-);
+const SubCategorySchema = new mongoose.Schema({
+  productname: { type: String, required: true },
+  image: { type: String, default: "" },
+  price: { type: String, default: "" },
+  currency: { type: String, default: "" },
+  quantity: { type: String, default: "" },
+  unit: { type: String, default: "" },
+  contact: { type: String, required: true },
 
-// Category schema
+});
+
 const CategorySchema = new mongoose.Schema(
   {
-    name:        { type: String, required: true },
-    image:       { type: String, required: true },
-    product:     { type: Number, default: 0 }, 
-    subcategories: [subcategorySchema],       
+    categoryname: { type: String, required: true }, // matches controller
+    image: { type: String, default: "" },
+    subcategories: [SubCategorySchema]
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model('Category', CategorySchema);
+module.exports = mongoose.model("Category", CategorySchema);

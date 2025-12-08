@@ -1,13 +1,14 @@
-
+// server.js
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const bodyParser = require("body-parser");
 
 const connectDB = require("./config/db");
 const errorHandler = require("./middleware/errorHandler");
 
 // routes
+const BankDetailsRoutes=require("./routes/SellerRoutes/BankDetailsroutes");
+const userProfileRoutes = require("./routes/SellerRoutes/Userprofileroutes");
 const categoryRoutes = require("./routes/CategoryRoutes");
 const productRoutes = require("./routes/productRoutes");
 const authRoutes = require("./routes/authRoutes");
@@ -19,8 +20,12 @@ const enquiryRoutes = require("./routes/enquiryRoutes");
 const requirementRoutes = require("./routes/requirementRoutes");
 
 const app = express();
+
+// Middlewares
 app.use(cors());
-app.use(bodyParser.json());
+// express.json is sufficient; no need for body-parser separately
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // DB
 connectDB();
@@ -28,16 +33,17 @@ connectDB();
 // base health check
 app.get("/", (req, res) => res.json({ status: "ok", time: new Date() }));
 
-// API mount
+// === API mounts ===
+// NOTE: mount userProfile routes at plural path and with a leading slash
+app.use("/api/userprofiles", userProfileRoutes);
+
+// Keep other mounts (avoid duplicates)
+app.use("/api/Bankdetails",BankDetailsRoutes)
 app.use("/api/categories", categoryRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api", userRoutes); // /api/user-count
-app.use("/api/categories", categoryRoutes);
+app.use("/api", userRoutes); // additional endpoints under /api
 app.use("/api/trendingcategories", trendingRoutes);
-app.use("/api", require("./routes/productRoutes"));
-
-
 app.use("/api/aircleaning", airCleaningRoutes);
 app.use("/api/christ", christmasRoutes);
 app.use("/api/enquiry", enquiryRoutes);

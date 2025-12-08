@@ -1,87 +1,110 @@
-const Category = require("../models/Categorymodel");
+// controllers/categoryController.js
+const Category = require("../models/Categorymodel"); // ✅ make sure file is models/Category.js
 
-// Get all categories with their subcategories
+// --------------------------------------------------
+// CREATE NEW CATEGORY
+// --------------------------------------------------
+exports.createCategory = async (req, res) => {
+  try {
+    const { categoryname, image, subcategories } = req.body;
+
+    // Validation
+    if (!categoryname) {
+      return res.status(400).json({ message: "categoryname is required" });
+    }
+
+    const category = new Category({
+      categoryname,
+      image: image || "",
+      // subcategories can already include contact/productname/etc. if you send them
+      subcategories: subcategories || [] // must match SubCategorySchema
+    });
+
+    const saved = await category.save();
+    return res.status(201).json(saved);
+  } catch (error) {
+    console.error("Create Category Error:", error);
+    return res
+      .status(500)
+      .json({ message: "Server Error", error: error.message });
+  }
+};
+
+// --------------------------------------------------
+// GET ALL CATEGORIES (with subcategories)
+// --------------------------------------------------
 exports.getAllCategories = async (req, res) => {
   try {
     const categories = await Category.find();
-    res.status(200).json({ categories });
+    return res.status(200).json(categories);
   } catch (error) {
-    console.error("Error fetching categories:", error);
-    res.status(500).json({ message: "Server error" });
+    console.error("Get Categories Error:", error);
+    return res
+      .status(500)
+      .json({ message: "Server Error", error: error.message });
   }
 };
 
-// Get a specific category by ID (with subcategories)
-exports.getCategoryById = async (req, res) => {
-  const { id } = req.params; // Extract the category ID from the URL
-
+// --------------------------------------------------
+// CREATE SUBCATEGORY UNDER A CATEGORY
+// --------------------------------------------------
+exports.createSubcategory = async (req, res) => {
   try {
-    const category = await Category.findById(id);
+    const { categoryId } = req.params;
+    const { productname, image, price, currency, quantity, unit, contact } =
+      req.body;
 
-    if (!category) {
-      return res.status(404).json({ message: "Category not found" });
+    if (!productname) {
+      return res.status(400).json({ message: "productname is required" });
     }
 
-    // Return the full category (including subcategories)
-    res.status(200).json({ category });
-  } catch (error) {
-    console.error("Error fetching category:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-// ✅ Get only subcategories of a specific category
-exports.getCategorySubcategories = async (req, res) => {
-  const { id } = req.params; // category ID
-
-  try {
-    // Only select the subcategories field
-    const category = await Category.findById(id).select("subcategories");
-
-    if (!category) {
-      return res.status(404).json({ message: "Category not found" });
-    }
-
-    res.status(200).json({ subcategories: category.subcategories });
-  } catch (error) {
-    console.error("Error fetching subcategories:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-// Create a new category with subcategories
-exports.createCategory = async (req, res) => {
-  const { name, subcategories } = req.body;
-
-  try {
-    const category = new Category({ name, subcategories });
-    await category.save();
-
-    res.status(201).json({ category });
-  } catch (error) {
-    console.error("Error creating category:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-// Add a subcategory to an existing category
-exports.addSubcategory = async (req, res) => {
-  const { categoryId } = req.params;
-  const { name } = req.body;
-
-  try {
     const category = await Category.findById(categoryId);
-
     if (!category) {
       return res.status(404).json({ message: "Category not found" });
     }
 
-    category.subcategories.push({ name });
-    await category.save();
+    const subcategory = {
+      productname,
+      image: image || "",
+      price: price || "",
+      currency: currency || "",
+      quantity: quantity || "",
+      unit: unit || "",
+      contact: contact || "" // ✅ now saved in subcategory
+    };
 
-    res.status(200).json({ category });
+    category.subcategories.push(subcategory);
+    const updated = await category.save();
+
+    return res.status(201).json(updated);
   } catch (error) {
-    console.error("Error adding subcategory:", error);
-    res.status(500).json({ message: "Server error" });
+    console.error("Create Subcategory Error:", error);
+    return res
+      .status(500)
+      .json({ message: "Server Error", error: error.message });
   }
 };
+
+// --------------------------------------------------
+// GET ALL SUBCATEGORIES FOR A CATEGORY
+// --------------------------------------------------
+exports.getAllSubcategories = async (req, res) => {
+  try {
+    const { categoryId } = req.params;
+
+    const category = await Category.findById(categoryId);
+    if (!category) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+
+    return res.status(200).json(category.subcategories);
+  } catch (error) {
+    console.error("Get Subcategories Error:", error);
+    return res
+      .status(500)
+      .json({ message: "Server Error", error: error.message });
+  }
+};
+
+
+

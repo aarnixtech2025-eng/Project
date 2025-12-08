@@ -1,6 +1,7 @@
 // src/Components/CategoryPage.jsx
 import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import FeaturedProducts from "./FeaturedProducts";
 
 const API_BASE_URL = "http://localhost:5000/api";
 const MAX_VISIBLE = 8;
@@ -25,7 +26,7 @@ function CategoryCard({ category, onClick }) {
           {category.image ? (
             <img
               src={category.image}
-              alt={category.categoryname || "Category"}
+              alt=""
               className="h-full w-full object-cover"
             />
           ) : (
@@ -60,7 +61,7 @@ export default function CategoryPage() {
       try {
         const res = await fetch(`${API_BASE_URL}/categories`);
         const data = await res.json();
-        setCategories(Array.isArray(data) ? data : []);
+        setCategories(data);
         setStatus("success");
       } catch (err) {
         setStatus("error");
@@ -75,29 +76,12 @@ export default function CategoryPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-14">
       <main className="max-w-7xl mx-auto px-6">
-        {/* Attractive centered heading */}
-        <header className="text-center mb-10">
-          <div className="inline-flex px-4 py-1.5 mb-3 rounded-full bg-blue-50 text-blue-700 text-[11px] uppercase font-semibold tracking-[0.22em]">
-            Featured Selection
-          </div>
+        <h1 className="text-3xl font-semibold text-slate-900 mb-10 text-center">
+          Explore <span className="text-blue-600">Top Categories</span>
+        </h1>
 
-          <h1 className="text-[30px] sm:text-[36px] lg:text-[42px] font-bold tracking-tight text-slate-900">
-            Explore{" "}
-            <span className="bg-gradient-to-r from-blue-600 to-sky-400 bg-clip-text text-transparent">
-              Top Categories
-            </span>
-          </h1>
-
-          <p className="mt-3 text-sm sm:text-base text-slate-500 max-w-xl mx-auto">
-            Discover a variety of professionally curated industrial segments
-            tailored for suppliers, manufacturers, and enterprise buyers.
-          </p>
-        </header>
-
-        {status === "loading" && <p className="text-center">Loading…</p>}
-        {status === "error" && (
-          <p className="text-center text-red-500">{error}</p>
-        )}
+        {status === "loading" && <p>Loading…</p>}
+        {status === "error" && <p className="text-red-500">{error}</p>}
 
         {status === "success" && (
           <>
@@ -110,11 +94,6 @@ export default function CategoryPage() {
                   category.category_id ||
                   category.categoryId;
 
-                if (!id) {
-                  console.warn("Category missing id:", category);
-                  return null;
-                }
-
                 return (
                   <CategoryCard
                     key={id}
@@ -125,15 +104,9 @@ export default function CategoryPage() {
                   />
                 );
               })}
-
-              {visible.length === 0 && (
-                <p className="col-span-full text-center text-slate-500">
-                  No categories available.
-                </p>
-              )}
             </div>
 
-            {/* View more button */}
+            {/* VIEW MORE BUTTON */}
             {categories.length > MAX_VISIBLE && (
               <div className="mt-10 flex justify-center">
                 <button
@@ -157,6 +130,11 @@ export default function CategoryPage() {
             )}
           </>
         )}
+
+        {/* spacing before FeaturedProducts */}
+        <div className="mt-20">
+          <FeaturedProducts />
+        </div>
       </main>
     </div>
   );
